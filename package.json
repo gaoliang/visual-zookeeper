@@ -10,22 +10,57 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:visual-zookeeper.helloWorld",
-		"onView:visualZooKeeper"
+		"onView:visualZooKeeper",
+		"onCommand:visualZooKeeper.viewNodeContent"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "visual-zookeeper",
+					"title": "Visual Zookeeper",
+					"icon": "media/zookeeper.svg"
+				}
+			]
+		},
 		"commands": [
 			{
-				"command": "visual-zookeeper.helloWorld",
-				"title": "Hello World"
+				"command": "visualZooKeeper.refreshNode",
+				"title": "Visual Zookeeper: Refresh Nodes",
+				"icon": "$(refresh)"
+			},
+			{
+				"command": "visualZooKeeper.setUpServer",
+				"title": "Visual Zookeeper: Configure ZooKeeper Servers"
+			},
+			{
+				"command": "visualZooKeeper.viewNodeContent",
+				"title": "Visual Zookeeper: View ZooKeeper Node Content",
+				"icon": "$(open-preview)"
 			}
 		],
 		"views": {
-			"explorer": [
+			"visual-zookeeper": [
 				{
 					"id": "visualZooKeeper",
 					"name": "Visual ZooKeeper"
+				}
+			]
+		},
+		"menus": {
+			"view/title": [
+				{
+					"command": "visualZooKeeper.refreshNode",
+					"when": "view == visualZooKeeper",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+				  "command": "visualZooKeeper.viewNodeContent",
+				  "when": "view == visualZooKeeper && viewItem == zkNode",
+				  "group": "inline"
 				}
 			]
 		}

@@ -4,45 +4,50 @@ import { createClient, Client } from 'node-zookeeper-client';
 
 
 export class ZooKeeperProvider implements vscode.TreeDataProvider<ZkNode> {
-    zkClient: Client;
-
-    constructor(private zkHost: string) {
-        this.zkClient = createClient('localhost:2181');
+    constructor(public zkServer: string) {
     }
+    private _onDidChangeTreeData: vscode.EventEmitter<ZkNode | undefined | null | void> = new vscode.EventEmitter<ZkNode | undefined | null | void>();
+    readonly onDidChangeTreeData: vscode.Event<ZkNode | undefined | null | void> = this._onDidChangeTreeData.event;
+
 
     getTreeItem(element: ZkNode): vscode.TreeItem {
         return element;
     }
 
+    public setZkServer(zkServer: string) {
+
+    }
+
+    refresh(): void {
+        this._onDidChangeTreeData.fire();
+    }
+
     getChildren(element?: ZkNode): Thenable<ZkNode[]> {
-        console.log("get children");
         return new Promise((resolve, reject) => {
-            this.zkClient = createClient('localhost:2181');
+            let zkClient = createClient(this.zkServer);
             let that = this;
-            this.zkClient.once("connected", function () {
-                console.log("connected");
-                that.zkClient.getChildren(
+            zkClient.once("connected", function () {
+                zkClient.getChildren(
                     element ? element.fullPath : '/',
-                    function (event) {
-                        console.log('Got watcher event: %s', event);
-                    },
                     function (error, children, stat) {
-                        console.log(error)
-                        console.log(children);
                         resolve(children.map(child => {
-                            return new ZkNode(child, '--', vscode.TreeItemCollapsibleState.Collapsed, element ? element.fullPath + '/' + child : '/' + child);
+                            return new ZkNode(
+                                child, '',
+                                vscode.TreeItemCollapsibleState.Collapsed,
+                                element ? element.fullPath + '/' + child : '/' + child
+                            );
                         }));
+                        zkClient.close();
                     }
                 );
-                console.log("close zk client");
-                that.zkClient.close();
+
             });
-            this.zkClient.connect();
+            zkClient.connect();
         });
     }
 }
 
-class ZkNode extends vscode.TreeItem {
+export class ZkNode extends vscode.TreeItem {
     constructor(
         public readonly label: string,
         public description: string,
@@ -53,4 +58,5 @@ class ZkNode extends vscode.TreeItem {
         this.tooltip = `${this.label}-${this.description}`;
         this.description = this.description;
     }
+    contextValue = "zkNode";
 }
