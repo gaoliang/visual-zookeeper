@@ -58,9 +58,9 @@
 			],
 			"view/item/context": [
 				{
-				  "command": "visualZooKeeper.viewNodeContent",
-				  "when": "view == visualZooKeeper && viewItem == zkNode",
-				  "group": "inline"
+					"command": "visualZooKeeper.viewNodeContent",
+					"when": "view == visualZooKeeper && viewItem == zkNode",
+					"group": "inline"
 				}
 			]
 		}

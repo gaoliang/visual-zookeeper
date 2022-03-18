@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { createClient, Client } from 'node-zookeeper-client';
+import { resolve } from 'path';
 
 
 
@@ -23,18 +24,26 @@ export class ZooKeeperProvider implements vscode.TreeDataProvider<ZkNode> {
     }
 
     getChildren(element?: ZkNode): Thenable<ZkNode[]> {
+        // root node here 
+        if (!element) {
+            return new Promise((resolve) => resolve([new ZkNode(
+                '/', '',
+                vscode.TreeItemCollapsibleState.Collapsed,
+                '/'
+            )]));
+        }
         return new Promise((resolve, reject) => {
             let zkClient = createClient(this.zkServer);
             let that = this;
             zkClient.once("connected", function () {
                 zkClient.getChildren(
-                    element ? element.fullPath : '/',
+                    element.fullPath,
                     function (error, children, stat) {
                         resolve(children.map(child => {
                             return new ZkNode(
                                 child, '',
                                 vscode.TreeItemCollapsibleState.Collapsed,
-                                element ? element.fullPath + '/' + child : '/' + child
+                                element.fullPath === '/' ? element.fullPath + child: element.fullPath + '/' + child
                             );
                         }));
                         zkClient.close();
