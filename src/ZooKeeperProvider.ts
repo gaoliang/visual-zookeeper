@@ -1,8 +1,6 @@
 import * as vscode from 'vscode';
-import { createClient, Client } from 'node-zookeeper-client';
-import { resolve } from 'path';
-
-
+import { ZkNode } from './ZkNode';
+import * as zkClient from './ZkClient';
 
 export class ZooKeeperProvider implements vscode.TreeDataProvider<ZkNode> {
     constructor(public zkServer: string) {
@@ -15,57 +13,12 @@ export class ZooKeeperProvider implements vscode.TreeDataProvider<ZkNode> {
         return element;
     }
 
-    public setZkServer(zkServer: string) {
-
-    }
-
     refresh(): void {
         this._onDidChangeTreeData.fire();
     }
 
     getChildren(element?: ZkNode): Thenable<ZkNode[]> {
-        // root node here 
-        if (!element) {
-            return new Promise((resolve) => resolve([new ZkNode(
-                '/', '',
-                vscode.TreeItemCollapsibleState.Collapsed,
-                '/'
-            )]));
-        }
-        return new Promise((resolve, reject) => {
-            let zkClient = createClient(this.zkServer);
-            let that = this;
-            zkClient.once("connected", function () {
-                zkClient.getChildren(
-                    element.fullPath,
-                    function (error, children, stat) {
-                        resolve(children.map(child => {
-                            return new ZkNode(
-                                child, '',
-                                vscode.TreeItemCollapsibleState.Collapsed,
-                                element.fullPath === '/' ? element.fullPath + child: element.fullPath + '/' + child
-                            );
-                        }));
-                        zkClient.close();
-                    }
-                );
-
-            });
-            zkClient.connect();
-        });
+        return zkClient.getChildren(element);
     }
 }
 
-export class ZkNode extends vscode.TreeItem {
-    constructor(
-        public readonly label: string,
-        public description: string,
-        public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-        public fullPath: string,
-    ) {
-        super(label, collapsibleState);
-        this.tooltip = `${this.label}-${this.description}`;
-        this.description = this.description;
-    }
-    contextValue = "zkNode";
-}
