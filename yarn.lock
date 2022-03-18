@@ -80,6 +80,13 @@
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-9.1.0.tgz#baf17ab2cca3fcce2d322ebc30454bff487efad5"
   integrity sha512-QCWHkbMv4Y5U9oW10Uxbr45qMMSzl4OzijsozynUAgx3kEHUdXB00udx2dWDQ7f2TU2a2uuiFaRZjCe3unPpeg==
 
+"@types/node-zookeeper-client@^0.2.8":
+  version "0.2.8"
+  resolved "https://registry.yarnpkg.com/@types/node-zookeeper-client/-/node-zookeeper-client-0.2.8.tgz#e2e2caf48b19a0d0aaf5c4656940655a2528e516"
+  integrity sha512-aD0hyo2AEHW4ed0lKFTFEVfq2VJmwcYQxV2AP7uYs68/mDx0aZc9VNLdyWJBvWXA9eF/0z4BCVDKLi24QoNX9Q==
+  dependencies:
+    "@types/node" "*"
+
 "@types/node@*":
   version "17.0.21"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.21.tgz#864b987c0c68d07b4345845c3e63b75edd143644"
@@ -251,6 +258,11 @@ array-union@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-2.1.0.tgz#b798420adbeb1de828d84acd8a2e23d3efe85e8d"
   integrity sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==
+
+async@~0.2.7:
+  version "0.2.10"
+  resolved "https://registry.yarnpkg.com/async/-/async-0.2.10.tgz#b6bbe0b0674b9d719708ca38de8c237cb526c3d1"
+  integrity sha1-trvgsGdLnXGXCMo43owjfLUmw9E=
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -978,6 +990,14 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
+node-zookeeper-client@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/node-zookeeper-client/-/node-zookeeper-client-1.1.1.tgz#cf49d725721306ae8b744210ba05650dfdcdf7bb"
+  integrity sha512-KhtRhLBvUm8SaiBsMAPojicK0L9ZKCm/vMekgklxzs1EHEjfpqYqyoLrhpk0FZOzRzXmc0cXdStik3GNelMTwg==
+  dependencies:
+    async "~0.2.7"
+    underscore "~1.12.1"
+
 normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-3.0.0.tgz#0dcd69ff23a1c9b11fd0978316644a0388216a65"
@@ -1269,6 +1289,11 @@ typescript@^4.5.5:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.2.tgz#fe12d2727b708f4eef40f51598b3398baa9611d4"
   integrity sha512-HM/hFigTBHZhLXshn9sN37H085+hQGeJHJ/X7LpBWLID/fbc2acUMfU+lGD98X81sKP+pFa9f0DZmCwB9GnbAg==
+
+underscore@~1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.12.1.tgz#7bb8cc9b3d397e201cf8553336d262544ead829e"
+  integrity sha512-hEQt0+ZLDVUMhebKxL4x1BTtDY7bavVofhZ9KZ4aI26X9SRaE+Y3m83XUL1UP2jn8ynjndwCCpEHdUG+9pP1Tw==
 
 unzipper@^0.10.11:
   version "0.10.11"
