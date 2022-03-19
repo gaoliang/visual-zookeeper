@@ -11,7 +11,7 @@ function bufferToInt(longBuffer: Buffer) {
 function bufferToDate(longBuffer: Buffer) {
     var hexString = longBuffer.toString('hex');
     var msSinceEpoch = parseInt(hexString, 16);
-    return new Date(msSinceEpoch);
+    return new Date(msSinceEpoch).toString();
 }
 
 /**
