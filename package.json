@@ -28,6 +28,11 @@
 		},
 		"commands": [
 			{
+				"command": "visualZooKeeper.editNode",
+				"title": "Visual ZooKeeper: Edit Node Content",
+				"icon": "$(edit)"
+			},
+			{
 				"command": "visualZooKeeper.refreshNode",
 				"title": "Visual Zookeeper: Refresh Nodes",
 				"icon": "$(refresh)"
@@ -67,6 +72,11 @@
 			"view/item/context": [
 				{
 					"command": "visualZooKeeper.viewNodeContent",
+					"when": "view == visualZooKeeper && viewItem == zkNode",
+					"group": "inline"
+				},
+				{
+					"command": "visualZooKeeper.editNode",
 					"when": "view == visualZooKeeper && viewItem == zkNode",
 					"group": "inline"
 				}
