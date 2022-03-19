@@ -32,6 +32,7 @@ export const createClient = (server: string) => {
             case zookeeper.State.CONNECTED_READ_ONLY:
                 isConnected = false;
                 statusBar.text = '$(debug-disconnect) ZK: Disconnected';
+                statusBar.tooltip = 'ZooKeeper Disconnected';
                 vscode.window.showErrorMessage(`[Visual ZooKeeper]: Connection state turn to ${state}`);
                 break;
             default:

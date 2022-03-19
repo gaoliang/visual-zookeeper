@@ -5,14 +5,15 @@ import { ZkNode } from './ZkNode';
 import ZkPreviewProvider from './ZkPreviewProvider';
 import { ZooKeeperProvider } from './ZooKeeperProvider';
 import * as zkClient from './ZkClient';
-import { MemFS } from './zkFileSystemProvider';
+import { ZkFS } from './zkFileSystemProvider';
 
+const BIG_SOLIDUS = "⧸";
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	const memFs = new MemFS();
-	context.subscriptions.push(vscode.workspace.registerFileSystemProvider('memfs', memFs, { isCaseSensitive: true }));
+	const zkFS = new ZkFS();
+	context.subscriptions.push(vscode.workspace.registerFileSystemProvider('zkfs', zkFS, { isCaseSensitive: true }));
 
 	const readOnlyScheme = 'zk-readonly';
 	let zkPreviewProvider = new ZkPreviewProvider();
@@ -81,18 +82,13 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		if (path) {
-			// that a trick: use U+29f8 "⧸" replace U+002f / slash. and put file at root /.
-			let filePath = '/' + path.split("/").join("⧸");
-			const uri = vscode.Uri.parse('memfs:' + filePath);
-			// create file in memfs for temp save.
-			zkClient.client?.getData(
-				path,
-				function (error: any, data: any, stat: any) {
-					memFs.writeFile(uri, data, { create: true, overwrite: true });
-					vscode.commands.executeCommand("vscode.open", uri);
-				}
-			);
-
+			if (path.indexOf(BIG_SOLIDUS) !== -1) {
+				throw new Error('[Visual ZooKeeper] Sorry, can not edit node path that contains "/" (U+29F8 BIG SOLIDUS)');
+			}
+			// this is a trick: use U+29F8 "⧸" replace U+002f / slash. and put file at root /.
+			let filePath = '/' + path.split("/").join(BIG_SOLIDUS);
+			const uri = vscode.Uri.parse('zkfs:' + filePath);
+			vscode.commands.executeCommand("vscode.open", uri, {}, path);
 		} else {
 			vscode.window.showInformationMessage('[Visual ZooKeeper] node path is empty');
 		}

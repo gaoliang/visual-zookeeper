@@ -1,7 +1,14 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
+import *  as zkClient from './ZkClient';
+import * as zookeeper from 'node-zookeeper-client';
 
-// TODO for edit node content.
+/**
+ * bridge file save and read to zk server.
+ * inspired by https://github.com/microsoft/vscode-extension-samples/tree/main/fsprovider-sample
+ */
+
+export const BIG_SOLIDUS = "⧸";
+
 export class File implements vscode.FileStat {
 
     type: vscode.FileType;
@@ -41,161 +48,102 @@ export class Directory implements vscode.FileStat {
     }
 }
 
+export const zkPathToFileName = (zkPath: string) => {
+    return '/' + zkPath.split("/").join(BIG_SOLIDUS);
+};
+
+const fileNameToZkPath = (fileName: string) => {
+    return fileName.substring(1).split("⧸").join("/");
+};
+
 export type Entry = File | Directory;
 
-export class MemFS implements vscode.FileSystemProvider {
+export class ZkFS implements vscode.FileSystemProvider {
 
     root = new Directory('');
 
-    // --- manage file metadata
-
-    stat(uri: vscode.Uri): vscode.FileStat {
-        return this._lookup(uri, false);
+    // --- manage file metadata, vs code call state before read.
+    stat(uri: vscode.Uri): Promise<vscode.FileStat> {
+        console.log("state: " + uri.path);
+        let zkPath = fileNameToZkPath(uri.path);
+        return new Promise((resolve, reject) => {
+            zkClient.client?.getData(
+                zkPath,
+                function (error: any, data: any, stat: zookeeper.Stat) {
+                    if (error) {
+                        console.log("state file faild: " + error);
+                        reject(error);
+                    }
+                    let file = new File(zkPath);
+                    // amazing! 
+                    file.ctime = stat.ctime;
+                    file.mtime = stat.mtime;
+                    file.name = zkPath;
+                    file.size = stat.dataLength;
+                    file.type = vscode.FileType.File;
+                    console.log("read file success , data: " + data);
+                    resolve(data);
+                }
+            );
+        });
     }
 
     readDirectory(uri: vscode.Uri): [string, vscode.FileType][] {
-        const entry = this._lookupAsDirectory(uri, false);
-        const result: [string, vscode.FileType][] = [];
-        for (const [name, child] of entry.entries) {
-            result.push([name, child.type]);
-        }
-        return result;
+        throw vscode.FileSystemError.Unavailable(uri);
     }
 
     // --- manage file contents
-
-    readFile(uri: vscode.Uri): Uint8Array {
-        const data = this._lookupAsFile(uri, false).data;
-        if (data) {
-            return data;
-        }
-        throw vscode.FileSystemError.FileNotFound();
+    readFile(uri: vscode.Uri): Promise<Uint8Array> {
+        let path = uri.path.substring(1).split("⧸").join("/");
+        return new Promise((resolve, reject) => {
+            zkClient.client?.getData(
+                path,
+                function (error: any, data: any, stat: any) {
+                    if (error) {
+                        console.log("read file faild: " + error);
+                        reject(error);
+                    }
+                    console.log("read file success , data: " + data);
+                    resolve(data);
+                }
+            );
+        });
     }
 
-    writeFile(uri: vscode.Uri, content: Uint8Array, options: { create: boolean, overwrite: boolean }): void {
-        const basename = path.posix.basename(uri.path);
-        const parent = this._lookupParentDirectory(uri);
-        let entry = parent.entries.get(basename);
-        if (entry instanceof Directory) {
-            throw vscode.FileSystemError.FileIsADirectory(uri);
-        }
-        if (!entry && !options.create) {
-            throw vscode.FileSystemError.FileNotFound(uri);
-        }
-        if (entry && options.create && !options.overwrite) {
-            throw vscode.FileSystemError.FileExists(uri);
-        }
-        if (!entry) {
-            entry = new File(basename);
-            parent.entries.set(basename, entry);
-            this._fireSoon({ type: vscode.FileChangeType.Created, uri });
-        }
-        entry.mtime = Date.now();
-        entry.size = content.byteLength;
-        entry.data = content;
-
-        this._fireSoon({ type: vscode.FileChangeType.Changed, uri });
+    writeFile(uri: vscode.Uri, content: Uint8Array, options: { create: boolean, overwrite: boolean }): Promise<void> {
+        let zkPath = fileNameToZkPath(uri.path);
+        let that = this;
+        return new Promise((resolve, reject) => {
+            zkClient.client?.setData(
+                zkPath,
+                Buffer.from(content),
+                function (error: any, stat: any) {
+                    if (error) {
+                        vscode.window.showErrorMessage('[Visual ZooKeeper] Failed to update zk node: ' + zkPath);
+                        reject(error);
+                    }
+                    vscode.window.showInformationMessage('[Visual ZooKeeper] Successfully updated zk node: ' + zkPath);
+                    that._fireSoon({ type: vscode.FileChangeType.Changed, uri });
+                    resolve();
+                }
+            );
+        });
     }
 
     // --- manage files/folders
-
     rename(oldUri: vscode.Uri, newUri: vscode.Uri, options: { overwrite: boolean }): void {
-
-        if (!options.overwrite && this._lookup(newUri, true)) {
-            throw vscode.FileSystemError.FileExists(newUri);
-        }
-
-        const entry = this._lookup(oldUri, false);
-        const oldParent = this._lookupParentDirectory(oldUri);
-
-        const newParent = this._lookupParentDirectory(newUri);
-        const newName = path.posix.basename(newUri.path);
-
-        oldParent.entries.delete(entry.name);
-        entry.name = newName;
-        newParent.entries.set(newName, entry);
-
-        this._fireSoon(
-            { type: vscode.FileChangeType.Deleted, uri: oldUri },
-            { type: vscode.FileChangeType.Created, uri: newUri }
-        );
+        throw vscode.FileSystemError.Unavailable(newUri);
     }
 
     delete(uri: vscode.Uri): void {
-        const dirname = uri.with({ path: path.posix.dirname(uri.path) });
-        const basename = path.posix.basename(uri.path);
-        const parent = this._lookupAsDirectory(dirname, false);
-        if (!parent.entries.has(basename)) {
-            throw vscode.FileSystemError.FileNotFound(uri);
-        }
-        parent.entries.delete(basename);
-        parent.mtime = Date.now();
-        parent.size -= 1;
-        this._fireSoon({ type: vscode.FileChangeType.Changed, uri: dirname }, { uri, type: vscode.FileChangeType.Deleted });
+        throw vscode.FileSystemError.Unavailable(uri);
     }
 
     createDirectory(uri: vscode.Uri): void {
-        const basename = path.posix.basename(uri.path);
-        const dirname = uri.with({ path: path.posix.dirname(uri.path) });
-        const parent = this._lookupAsDirectory(dirname, false);
-
-        const entry = new Directory(basename);
-        parent.entries.set(entry.name, entry);
-        parent.mtime = Date.now();
-        parent.size += 1;
-        this._fireSoon({ type: vscode.FileChangeType.Changed, uri: dirname }, { type: vscode.FileChangeType.Created, uri });
+        throw vscode.FileSystemError.Unavailable(uri);
     }
 
-    // --- lookup
-
-    private _lookup(uri: vscode.Uri, silent: false): Entry;
-    private _lookup(uri: vscode.Uri, silent: boolean): Entry | undefined;
-    private _lookup(uri: vscode.Uri, silent: boolean): Entry | undefined {
-        const parts = uri.path.split('/');
-        let entry: Entry = this.root;
-        for (const part of parts) {
-            if (!part) {
-                continue;
-            }
-            let child: Entry | undefined;
-            if (entry instanceof Directory) {
-                child = entry.entries.get(part);
-            }
-            if (!child) {
-                if (!silent) {
-                    throw vscode.FileSystemError.FileNotFound(uri);
-                } else {
-                    return undefined;
-                }
-            }
-            entry = child;
-        }
-        return entry;
-    }
-
-    private _lookupAsDirectory(uri: vscode.Uri, silent: boolean): Directory {
-        const entry = this._lookup(uri, silent);
-        if (entry instanceof Directory) {
-            return entry;
-        }
-        throw vscode.FileSystemError.FileNotADirectory(uri);
-    }
-
-    private _lookupAsFile(uri: vscode.Uri, silent: boolean): File {
-        const entry = this._lookup(uri, silent);
-        if (entry instanceof File) {
-            return entry;
-        }
-        throw vscode.FileSystemError.FileIsADirectory(uri);
-    }
-
-    private _lookupParentDirectory(uri: vscode.Uri): Directory {
-        const dirname = uri.with({ path: path.posix.dirname(uri.path) });
-        return this._lookupAsDirectory(dirname, false);
-    }
-
-    // --- manage file events
-
+    // TODO --- manage file events 
     private _emitter = new vscode.EventEmitter<vscode.FileChangeEvent[]>();
     private _bufferedEvents: vscode.FileChangeEvent[] = [];
     private _fireSoonHandle?: NodeJS.Timer;
