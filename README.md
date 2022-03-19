@@ -1,11 +1,9 @@
-# Visual ZooKeeper README
+# Visual ZooKeeper
 
 Visually manage your ZooKeeper in Visual Studio Code.
-![version badge](https://img.shields.io/visual-studio-marketplace/v/gaoliang.visual-zookeeper?style=flat-square)
 
-**[Install](vscode:extension/gaoliang.visual-zookeeper)** 
+[![version badge](https://img.shields.io/visual-studio-marketplace/v/gaoliang.visual-zookeeper?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=gaoliang.visual-zookeeper)
 
-**[Marketplace](https://marketplace.visualstudio.com/items?itemName=gaoliang.visual-zookeeper)**
 ## Features
 1. 🚀 Edit and view data on ZooKeeper using the perfect VSCode's editor.
 ![json data edit](screenshots/1-json.png)
