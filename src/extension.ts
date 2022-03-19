@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { ZkNode } from './ZkNode';
-import ZkPreviewProvider from './ZkPreviewProvider';
+import ZkStatProvider from './ZkStatProvider';
 import { ZooKeeperProvider } from './ZooKeeperProvider';
 import * as zkClient from './ZkClient';
 import { ZkFS } from './zkFileSystemProvider';
@@ -15,12 +15,12 @@ export function activate(context: vscode.ExtensionContext) {
 	const zkFS = new ZkFS();
 	context.subscriptions.push(vscode.workspace.registerFileSystemProvider('zkfs', zkFS, { isCaseSensitive: true }));
 
-	const readOnlyScheme = 'zk-readonly';
-	let zkPreviewProvider = new ZkPreviewProvider();
-	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(readOnlyScheme, zkPreviewProvider));
-	context.subscriptions.push(vscode.commands.registerCommand('visualZooKeeper.viewNodeContent', async (node: ZkNode) => {
+	const zkStatScheme = 'zk-stat';
+	let zkStatProvider = new ZkStatProvider();
+	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider(zkStatScheme, zkStatProvider));
+	context.subscriptions.push(vscode.commands.registerCommand('visualZooKeeper.viewNodeStat', async (node: ZkNode) => {
 		if (!zkClient.client || !zkClient.isConnected) {
-			vscode.window.showErrorMessage(`[Visual ZooKeeper]: faild to view node content, server is not connected!`, 'Configure ZK Server').then(
+			vscode.window.showErrorMessage(`[Visual ZooKeeper]: faild to view node stat, server is not connected!`, 'Configure ZK Server').then(
 				(value) => {
 					if (value === 'Configure ZK Server') {
 						vscode.commands.executeCommand('visualZooKeeper.configureServer');
@@ -38,8 +38,8 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		if (path) {
-			const uri = vscode.Uri.parse('zk-readonly:' + path);
-			zkPreviewProvider.onDidChangeEmitter.fire(uri);
+			const uri = vscode.Uri.parse(zkStatScheme + ":" + path + " > stat.json");
+			zkStatProvider.onDidChangeEmitter.fire(uri);
 			const doc = await vscode.workspace.openTextDocument(uri); // calls back into the provider
 			await vscode.window.showTextDocument(doc, { preview: false });
 		} else {
@@ -64,7 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('visualZooKeeper.editNode', async (node: ZkNode) => {
 
 		if (!zkClient.client || !zkClient.isConnected) {
-			vscode.window.showErrorMessage(`[Visual ZooKeeper]: faild to view node content, server is not connected!`, 'Configure ZK Server').then(
+			vscode.window.showErrorMessage(`[Visual ZooKeeper]: faild to edit node content, server is not connected!`, 'Configure ZK Server').then(
 				(value) => {
 					if (value === 'Configure ZK Server') {
 						vscode.commands.executeCommand('visualZooKeeper.configureServer');

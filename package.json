@@ -11,7 +11,7 @@
 	],
 	"activationEvents": [
 		"onView:visualZooKeeper",
-		"onCommand:visualZooKeeper.viewNodeContent",
+		"onCommand:visualZooKeeper.viewNodeStat",
 		"onCommand:visualZooKeeper.configureServer",
 		"onCommand:visualZooKeeper.refreshNode"
 	],
@@ -42,9 +42,9 @@
 				"title": "Visual Zookeeper: Configure ZooKeeper Servers"
 			},
 			{
-				"command": "visualZooKeeper.viewNodeContent",
-				"title": "Visual Zookeeper: View ZooKeeper Node Content",
-				"icon": "$(open-preview)"
+				"command": "visualZooKeeper.viewNodeStat",
+				"title": "Visual Zookeeper: View ZooKeeper Node Stat",
+				"icon": "$(info)"
 			}
 		],
 		"viewsWelcome": [
@@ -71,7 +71,7 @@
 			],
 			"view/item/context": [
 				{
-					"command": "visualZooKeeper.viewNodeContent",
+					"command": "visualZooKeeper.viewNodeStat",
 					"when": "view == visualZooKeeper && viewItem == zkNode",
 					"group": "inline"
 				},
