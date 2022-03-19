@@ -3,7 +3,7 @@ import { ZkNode } from './ZkNode';
 import * as zkClient from './ZkClient';
 
 export class ZooKeeperProvider implements vscode.TreeDataProvider<ZkNode> {
-    constructor(public zkServer: string) {
+    constructor() {
     }
     private _onDidChangeTreeData: vscode.EventEmitter<ZkNode | undefined | null | void> = new vscode.EventEmitter<ZkNode | undefined | null | void>();
     readonly onDidChangeTreeData: vscode.Event<ZkNode | undefined | null | void> = this._onDidChangeTreeData.event;

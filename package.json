@@ -11,14 +11,16 @@
 	],
 	"activationEvents": [
 		"onView:visualZooKeeper",
-		"onCommand:visualZooKeeper.viewNodeContent"
+		"onCommand:visualZooKeeper.viewNodeContent",
+		"onCommand:visualZooKeeper.configureServer",
+		"onCommand:visualZooKeeper.refreshNode"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"viewsContainers": {
 			"activitybar": [
 				{
-					"id": "visual-zookeeper",
+					"id": "visual-zookeeper-container",
 					"title": "Visual Zookeeper",
 					"icon": "media/zookeeper.svg"
 				}
@@ -31,7 +33,7 @@
 				"icon": "$(refresh)"
 			},
 			{
-				"command": "visualZooKeeper.setUpServer",
+				"command": "visualZooKeeper.configureServer",
 				"title": "Visual Zookeeper: Configure ZooKeeper Servers"
 			},
 			{
@@ -40,8 +42,14 @@
 				"icon": "$(open-preview)"
 			}
 		],
+		"viewsWelcome": [
+			{
+				"view": "visualZooKeeper",
+				"contents": "No ZooKeeper nodes found. \n [Configure ZK Server](command:visualZooKeeper.configureServer)"
+			}
+		],
 		"views": {
-			"visual-zookeeper": [
+			"visual-zookeeper-container": [
 				{
 					"id": "visualZooKeeper",
 					"name": "Visual ZooKeeper"

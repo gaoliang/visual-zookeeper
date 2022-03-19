@@ -1,6 +1,6 @@
-# visual-zookeeper README
+# Visual ZooKeeper README
 
-This is the README for your extension "visual-zookeeper". After writing up a brief description, we recommend including the following sections.
+Visually manage your ZooKeeper in Visual Studio Code.
 
 ## Features
 
