@@ -51,6 +51,10 @@
 				"command": "visualZooKeeper.viewNodeStat",
 				"title": "Visual Zookeeper: View ZooKeeper Node Stat",
 				"icon": "$(info)"
+			},
+			{
+				"command": "visualZooKeeper.copyPath",
+				"title": "Copy Node Full Path"
 			}
 		],
 		"viewsWelcome": [
@@ -68,6 +72,12 @@
 			]
 		},
 		"menus": {
+			"commandPalette": [
+				{
+					"command": "visualZooKeeper.copyPath",
+					"when": "view == visualZooKeeper && viewItem == zkNode"
+				  }
+			],
 			"view/title": [
 				{
 					"command": "visualZooKeeper.refreshNode",
@@ -95,6 +105,10 @@
 					"command": "visualZooKeeper.editNode",
 					"when": "view == visualZooKeeper && viewItem == zkNode",
 					"group": "inline"
+				},
+				{
+					"command": "visualZooKeeper.copyPath",
+					"when": "view == visualZooKeeper && viewItem == zkNode"
 				}
 			]
 		}
