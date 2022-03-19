@@ -1,19 +1,23 @@
 {
 	"name": "visual-zookeeper",
-	"displayName": "visual-zookeeper",
-	"description": "",
-	"version": "0.0.1",
+	"displayName": "Visual ZooKeeper",
+	"publisher": "gaoliang",
+	"description": "Visually manage your ZooKeeper in Visual Studio Code.",
+	"version": "1.0.0",
+	"repository": "https://github.com/gaoliang/visual-zookeeper",
+	"icon": "media/zk-logo.png",
+	"categories": ["Visualization", "Other"],
+	"keywords": ["zookeeper"],
 	"engines": {
 		"vscode": "^1.65.0"
 	},
-	"categories": [
-		"Other"
-	],
 	"activationEvents": [
 		"onView:visualZooKeeper",
 		"onCommand:visualZooKeeper.viewNodeStat",
 		"onCommand:visualZooKeeper.configureServer",
-		"onCommand:visualZooKeeper.refreshNode"
+		"onCommand:visualZooKeeper.refreshNode",
+		"onCommand:visualZooKeeper.addNode",
+		"onCommand:visualZooKeeper.viewNodeStat"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -22,7 +26,7 @@
 				{
 					"id": "visual-zookeeper-container",
 					"title": "Visual Zookeeper",
-					"icon": "media/zookeeper.svg"
+					"icon": "media/zookeeper.png"
 				}
 			]
 		},

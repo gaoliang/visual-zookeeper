@@ -6,4 +6,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-- Initial release
+
+## [0.3.0] - 2022-03-19
+### Added
+- Initial release of Visual ZooKeeper.

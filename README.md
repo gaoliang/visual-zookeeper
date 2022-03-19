@@ -22,10 +22,6 @@ When using Visual ZooKeeper for the first time, you need to configure the server
 
 ## Known Issues
 
-## todo
-[ ] support delete node.
-[ ] support ACL
-
 ## Release Notes
 
 ### 1.0.0
