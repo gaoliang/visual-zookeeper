@@ -13,7 +13,8 @@ const BIG_SOLIDUS = "⧸";
 export function activate(context: vscode.ExtensionContext) {
 
 	const zkFS = new ZkFS();
-	context.subscriptions.push(vscode.workspace.registerFileSystemProvider('zkfs', zkFS, { isCaseSensitive: true }));
+	const zkfsScheme = "zkfs";
+	context.subscriptions.push(vscode.workspace.registerFileSystemProvider(zkfsScheme, zkFS, { isCaseSensitive: true }));
 
 	const zkStatScheme = 'zk-stat';
 	let zkStatProvider = new ZkStatProvider();
@@ -55,10 +56,30 @@ export function activate(context: vscode.ExtensionContext) {
 	));
 
 	context.subscriptions.push(vscode.commands.registerCommand('visualZooKeeper.configureServer', async () => {
-		let server = await vscode.window.showInputBox({ placeHolder: 'Comma separated host:port pairs,each represents a ZooKeeper server.' });
+		let server = await vscode.window.showInputBox({
+			title: 'Configure ZooKeeper Server',
+			placeHolder: 'Comma separated host:port pairs,each represents a ZooKeeper server.'
+		});
 		if (server) {
 			zkClient.createClient(server);
 		}
+	}));
+
+
+	context.subscriptions.push(vscode.commands.registerCommand('visualZooKeeper.addNode', async (parent: ZkNode) => {
+		let nodeName = await vscode.window.showInputBox({
+			title: 'Input New Node Name',
+			placeHolder: 'Please input new node name.'
+		});
+		
+		let fullNewPath = `${parent.fullPath === '/' ? '' : parent.fullPath}/${nodeName}`;
+		zkClient.client?.create(fullNewPath, function (error, path) {
+			if (error) {
+				throw error;
+			}
+			vscode.commands.executeCommand("visualZooKeeper.refreshNode");
+			vscode.window.showInformationMessage('[Visual ZooKeeper] Successfully updated zk node: ' + fullNewPath);
+		});
 	}));
 
 	context.subscriptions.push(vscode.commands.registerCommand('visualZooKeeper.editNode', async (node: ZkNode) => {
@@ -75,7 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 		// two source: tree item click or cmmand input. 
 		let path;
-		if (node) {
+		if (node instanceof ZkNode) {
 			path = node.fullPath;
 		} else {
 			path = await vscode.window.showInputBox({ placeHolder: 'ZooKeeper node path' });
@@ -87,7 +108,7 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 			// this is a trick: use U+29F8 "⧸" replace U+002f / slash. and put file at root /.
 			let filePath = '/' + path.split("/").join(BIG_SOLIDUS);
-			const uri = vscode.Uri.parse('zkfs:' + filePath);
+			const uri = vscode.Uri.parse(zkfsScheme + ':' + filePath);
 			vscode.commands.executeCommand("vscode.open", uri, {}, path);
 		} else {
 			vscode.window.showInformationMessage('[Visual ZooKeeper] node path is empty');

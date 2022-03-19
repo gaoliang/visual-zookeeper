@@ -2,7 +2,7 @@ import * as zookeeper from 'node-zookeeper-client';
 import * as vscode from 'vscode';
 import { ZkNode } from './ZkNode';
 
-let server = 'localhost:2181';
+export let server = '';
 export let isConnected = false;
 export let client: zookeeper.Client | null = null;
 let statusBar: vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
@@ -14,6 +14,7 @@ export const createClient = (server: string) => {
         { sessionTimeout: 1000 }
     );
     isConnected = false;
+    server = server;
 
     client.on("state", (state) => {
         console.log(`[Visual ZooKeeper]: client state turn to  ${state}`);
@@ -69,7 +70,7 @@ export const getChildren = (parent?: ZkNode): Promise<ZkNode[]> => {
             function (error, children, stat) {
                 console.error(error);
                 if (error) {
-                    reject('ERROR!');
+                    reject(error);
                 }
                 resolve(children.map(child => {
                     return new ZkNode(

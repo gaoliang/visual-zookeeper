@@ -39,7 +39,13 @@
 			},
 			{
 				"command": "visualZooKeeper.configureServer",
-				"title": "Visual Zookeeper: Configure ZooKeeper Servers"
+				"title": "Visual Zookeeper: Configure ZooKeeper Servers",
+				"icon": "$(server)"
+			},
+			{
+				"command": "visualZooKeeper.addNode",
+				"title": "Visual Zookeeper: Add ZooKeeper Node",
+				"icon": "$(add)"
 			},
 			{
 				"command": "visualZooKeeper.viewNodeStat",
@@ -67,11 +73,21 @@
 					"command": "visualZooKeeper.refreshNode",
 					"when": "view == visualZooKeeper",
 					"group": "navigation"
+				},
+				{
+					"command": "visualZooKeeper.configureServer",
+					"when": "view == visualZooKeeper",
+					"group": "navigation"
 				}
 			],
 			"view/item/context": [
 				{
 					"command": "visualZooKeeper.viewNodeStat",
+					"when": "view == visualZooKeeper && viewItem == zkNode",
+					"group": "inline"
+				},
+				{
+					"command": "visualZooKeeper.addNode",
 					"when": "view == visualZooKeeper && viewItem == zkNode",
 					"group": "inline"
 				},

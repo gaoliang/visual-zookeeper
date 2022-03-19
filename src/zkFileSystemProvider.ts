@@ -81,8 +81,7 @@ export class ZkFS implements vscode.FileSystemProvider {
                     file.name = zkPath;
                     file.size = stat.dataLength;
                     file.type = vscode.FileType.File;
-                    console.log("read file success , data: " + data);
-                    resolve(data);
+                    resolve(file);
                 }
             );
         });
@@ -104,7 +103,7 @@ export class ZkFS implements vscode.FileSystemProvider {
                         reject(error);
                     }
                     console.log("read file success , data: " + data);
-                    resolve(data);
+                    resolve(data || new Uint8Array(0));
                 }
             );
         });
