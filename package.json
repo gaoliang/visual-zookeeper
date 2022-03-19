@@ -3,7 +3,7 @@
 	"displayName": "Visual ZooKeeper",
 	"publisher": "gaoliang",
 	"description": "Visually manage your ZooKeeper in Visual Studio Code.",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"repository": "https://github.com/gaoliang/visual-zookeeper",
 	"license": "SEE LICENSE IN LICENSE",
 	"icon": "media/zk-logo.png",

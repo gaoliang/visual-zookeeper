@@ -69,9 +69,19 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('visualZooKeeper.addNode', async (parent: ZkNode) => {
 		let nodeName = await vscode.window.showInputBox({
 			title: 'Input New Node Name',
-			placeHolder: 'Please input new node name.'
+			placeHolder: 'Please input new node name.',
+			validateInput: (value: string) => {
+				if (!value) {
+					return "Node name is empty";
+				}
+				if (value.indexOf("/") !== -1) {
+					return "Node name can't contain '/'";
+				}
+			}
 		});
-		
+		if (!nodeName) {
+			return;
+		}
 		let fullNewPath = `${parent.fullPath === '/' ? '' : parent.fullPath}/${nodeName}`;
 		zkClient.client?.create(fullNewPath, function (error, path) {
 			if (error) {
