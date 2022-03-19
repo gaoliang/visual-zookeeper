@@ -5,6 +5,7 @@
 	"description": "Visually manage your ZooKeeper in Visual Studio Code.",
 	"version": "1.0.0",
 	"repository": "https://github.com/gaoliang/visual-zookeeper",
+	"license": "SEE LICENSE IN LICENSE",
 	"icon": "media/zk-logo.png",
 	"categories": ["Visualization", "Other"],
 	"keywords": ["zookeeper"],
