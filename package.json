@@ -34,32 +34,32 @@
 		"commands": [
 			{
 				"command": "visualZooKeeper.editNode",
-				"title": "Visual ZooKeeper: Edit Node Content",
+				"title": "Edit ZooKeeper Node Data",
 				"icon": "$(edit)"
 			},
 			{
 				"command": "visualZooKeeper.refreshNode",
-				"title": "Visual Zookeeper: Refresh Nodes",
+				"title": "Refresh ZooKeeper Nodes",
 				"icon": "$(refresh)"
 			},
 			{
 				"command": "visualZooKeeper.configureServer",
-				"title": "Visual Zookeeper: Configure ZooKeeper Servers",
+				"title": "Configure ZooKeeper Servers",
 				"icon": "$(server)"
 			},
 			{
 				"command": "visualZooKeeper.addNode",
-				"title": "Visual Zookeeper: Add ZooKeeper Node",
+				"title": "Add ZooKeeper Node",
 				"icon": "$(add)"
 			},
 			{
 				"command": "visualZooKeeper.viewNodeStat",
-				"title": "Visual Zookeeper: View ZooKeeper Node Stat",
+				"title": "View ZooKeeper Node Stat Info",
 				"icon": "$(info)"
 			},
 			{
 				"command": "visualZooKeeper.copyPath",
-				"title": "Copy Node Full Path"
+				"title": "Copy ZooKeeper Node Full Path"
 			}
 		],
 		"viewsWelcome": [

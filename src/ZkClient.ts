@@ -20,7 +20,7 @@ export const createClient = (server: string) => {
         console.log(`[Visual ZooKeeper]: client state turn to  ${state}`);
         switch (state) {
             case zookeeper.State.SYNC_CONNECTED:
-                statusBar.text = '$(check) ZK: connceted';
+                statusBar.text = '$(check) ZK: Connected';
                 statusBar.tooltip = 'ZooKeeper server is connected to ' + server;
                 vscode.window.showInformationMessage('[Visual ZooKeeper]: Connected to ' + server);
                 isConnected = true;
