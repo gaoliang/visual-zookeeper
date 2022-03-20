@@ -3,7 +3,7 @@
 	"displayName": "Visual ZooKeeper",
 	"publisher": "gaoliang",
 	"description": "Visually manage your ZooKeeper in Visual Studio Code.",
-	"version": "1.0.1",
+	"version": "1.0.3",
 	"repository": "https://github.com/gaoliang/visual-zookeeper",
 	"license": "SEE LICENSE IN LICENSE",
 	"icon": "media/zk-logo.png",
@@ -27,7 +27,7 @@
 				{
 					"id": "visual-zookeeper-container",
 					"title": "Visual Zookeeper",
-					"icon": "media/zookeeper.png"
+					"icon": "media/zookeeper.svg"
 				}
 			]
 		},
@@ -35,31 +35,37 @@
 			{
 				"command": "visualZooKeeper.editNode",
 				"title": "Edit ZooKeeper Node Data",
-				"icon": "$(edit)"
+				"icon": "$(edit)",
+				"category": "Visual Zookeeper"
 			},
 			{
 				"command": "visualZooKeeper.refreshNode",
 				"title": "Refresh ZooKeeper Nodes",
-				"icon": "$(refresh)"
+				"icon": "$(refresh)",
+				"category": "Visual Zookeeper"
 			},
 			{
 				"command": "visualZooKeeper.configureServer",
 				"title": "Configure ZooKeeper Servers",
-				"icon": "$(server)"
+				"icon": "$(server)",
+				"category": "Visual Zookeeper"
 			},
 			{
 				"command": "visualZooKeeper.addNode",
 				"title": "Add ZooKeeper Node",
-				"icon": "$(add)"
+				"icon": "$(add)",
+				"category": "Visual Zookeeper"
 			},
 			{
 				"command": "visualZooKeeper.viewNodeStat",
 				"title": "View ZooKeeper Node Stat Info",
-				"icon": "$(info)"
+				"icon": "$(info)",
+				"category": "Visual Zookeeper"
 			},
 			{
 				"command": "visualZooKeeper.copyPath",
-				"title": "Copy ZooKeeper Node Full Path"
+				"title": "Copy ZooKeeper Node Full Path",
+				"category": "Visual Zookeeper"
 			}
 		],
 		"viewsWelcome": [
